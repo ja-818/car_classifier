@@ -26,4 +26,4 @@ with open('../data/car_dataset_labels.csv', 'wb') as data:
 # extract dataset
 tar = tarfile.open("../data/training_image_set.tgz", "r")
 for item in tar:
-  tar.extract(item, "../data")
+    tar.extract(item, "../data")
