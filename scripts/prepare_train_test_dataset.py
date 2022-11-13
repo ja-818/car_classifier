@@ -89,22 +89,21 @@ def main(data_folder, labels, output_data_folder):
     
     #   2. Iterate over each row in the CSV, create the corresponding
     #      train/test and class folders
-    os.mkdir("../data/car_ims_v1")
-    os.mkdir("../data/car_ims_v1/test")
-    os.mkdir("../data/car_ims_v1/train")
+    os.mkdir(output_data_folder)
+    os.mkdir(f"{output_data_folder}/test")
+    os.mkdir(f"{output_data_folder}/train")
     for label in labels_df["class"].unique():
-        os.mkdir("../data/car_ims_v1/test/" + label)
-        os.mkdir("../data/car_ims_v1/train/" + label)
+        os.mkdir(f"{output_data_folder}/test/{label}")
+        os.mkdir(f"{output_data_folder}/train/{label}")
     
     #   3. Copy the image to the new folder structure. We recommend you to
     #      use `os.link()` to avoid wasting disk space with duplicated files
     for _, row in labels_df.iterrows():
         os.link(
-            "../data/car_ims/" + row["img_name"],
-            f"../data/car_ims_v1/{row['subset']}/{row['class']}/{row['img_name']}"
+            f"{data_folder}/{row['img_name']}",
+            f"{output_data_folder}/{row['subset']}/{row['class']}/{row['img_name']}"
             )
 
 if __name__ == "__main__":
-    # args = parse_args()
-    # main(args.data_folder, args.labels, args.output_data_folder)
-    main("","../data/car_dataset_labels.csv","")
+    args = parse_args()
+    main(args.data_folder, args.labels, args.output_data_folder)
