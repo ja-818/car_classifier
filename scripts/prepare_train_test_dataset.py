@@ -66,6 +66,8 @@ def parse_args():
 
     return args
 
+import pandas as pd
+import os
 
 def main(data_folder, labels, output_data_folder):
     """
@@ -83,13 +85,26 @@ def main(data_folder, labels, output_data_folder):
     """
     # For this function, you must:
     #   1. Load labels CSV file
+    labels_df = pd.read_csv(labels)
+    
     #   2. Iterate over each row in the CSV, create the corresponding
     #      train/test and class folders
+    os.mkdir("../data/car_ims_v1")
+    os.mkdir("../data/car_ims_v1/test")
+    os.mkdir("../data/car_ims_v1/train")
+    for label in labels_df["class"].unique():
+        os.mkdir("../data/car_ims_v1/test/" + label)
+        os.mkdir("../data/car_ims_v1/train/" + label)
+    
     #   3. Copy the image to the new folder structure. We recommend you to
     #      use `os.link()` to avoid wasting disk space with duplicated files
-    # TODO
-
+    for _, row in labels_df.iterrows():
+        os.link(
+            "../data/car_ims/" + row["img_name"],
+            f"../data/car_ims_v1/{row['subset']}/{row['class']}/{row['img_name']}"
+            )
 
 if __name__ == "__main__":
-    args = parse_args()
-    main(args.data_folder, args.labels, args.output_data_folder)
+    # args = parse_args()
+    # main(args.data_folder, args.labels, args.output_data_folder)
+    main("","../data/car_dataset_labels.csv","")
