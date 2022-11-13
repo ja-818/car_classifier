@@ -1,5 +1,6 @@
 import os
-
+import yaml
+from yaml.loader import SafeLoader
 
 def validate_config(config):
     """
@@ -37,16 +38,15 @@ def load_config(config_file_path):
     config : dict
         Experiment settings as a Python dict.
     """
-    # TODO
     # Load config here and assign to `config` variable
-    config = None
+    with open(config_file_path) as f:
+        config = yaml.load(f, Loader=SafeLoader)
 
     # Don't remove this as will help you doing some basic checks on config
     # content
     validate_config(config)
-
+    
     return config
-
 
 def get_class_names(config):
     """
