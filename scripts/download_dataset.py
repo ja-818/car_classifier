@@ -16,8 +16,8 @@ s3 = boto3.resource(
 bucket = s3.Bucket('anyoneai-datasets')
 
 # download the training dataset
-with open('training_image_set.tgz', 'wb') as data:
+with open('../data/training_image_set.tgz', 'wb') as data:
     bucket.download_fileobj('cars196/car_ims.tgz', data)
 # download the dataset labels
-with open('car_dataset_labels.csv', 'wb') as data:
+with open('../data/car_dataset_labels.csv', 'wb') as data:
     bucket.download_fileobj('cars196/car_dataset_labels.csv', data)
