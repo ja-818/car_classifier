@@ -106,7 +106,7 @@ def create_model(
         # Add the classification layer here, use keras.layers.Dense() and
         # `classes` parameter
         # Assign it to `outputs` variable
-        outputs = keras.layers.Dense(classes)(x)
+        outputs = keras.layers.Dense(classes, activation="softmax")(x)
 
         # Now you have all the layers in place, create a new model
         # Use keras.Model()
