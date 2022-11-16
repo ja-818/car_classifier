@@ -1,4 +1,5 @@
 
+from tensorflow import keras
 def create_data_aug_layer(data_aug_layer):
     """
     Use this function to parse the data augmentation methods for the
@@ -26,13 +27,19 @@ def create_data_aug_layer(data_aug_layer):
     # Parse config and create layers
     # You can use as a guide on how to pass config parameters to keras
     # looking at the code in `scripts/train.py`
-    # TODO
+    AUG_LAYERS = {
+        "random_flip": keras.layers.RandomFlip,
+        "random_rotation": keras.layers.RandomRotation,
+        "random_zoom": keras.layers.RandomZoom
+    }
     # Append the data augmentation layers on this list
     data_aug_layers = []
+    if data_aug_layer is not None:
+        for name, params in data_aug_layer.items():
+            data_aug_layers.append(AUG_LAYERS[name](**params))
 
     # Return a keras.Sequential model having the the new layers created
     # Assign to `data_augmentation` variable
-    # TODO
-    data_augmentation = None
+    data_augmentation = keras.Sequential(data_aug_layers)
 
     return data_augmentation
