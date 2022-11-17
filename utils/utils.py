@@ -1,5 +1,6 @@
 import os
 import yaml
+from tensorflow import keras
 from yaml.loader import SafeLoader
 
 def validate_config(config):
@@ -137,9 +138,15 @@ def predict_from_folder(folder, model, input_size, class_names):
     # prediction will be a vector assigning probability scores to each
     # class. You must take the position of the element in the vector with
     # the highest probability and use that to get the corresponding class
-    # name from `class_names` list.
-    # TODO
-    predictions = None
-    labels = None
+    # name from `class_names` list.    
+    predictions = []
+    labels = []
+    
+    for i in walkdir(folder):
+        image = keras.utils.load_img(i[0])
+        image = keras.utils.img_to_array(image, target_size=input_size)
+        prediction = model.predict(image)
+        predictions.append(prediction[0])
+        labels.append(i[0].split("/")[3])
 
     return predictions, labels
