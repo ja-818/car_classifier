@@ -1,5 +1,7 @@
 import os
 import yaml
+import numpy as np
+import tensorflow as tf
 from tensorflow import keras
 from yaml.loader import SafeLoader
 
@@ -141,12 +143,14 @@ def predict_from_folder(folder, model, input_size, class_names):
     # name from `class_names` list.    
     predictions = []
     labels = []
-    
     for i in walkdir(folder):
-        image = keras.utils.load_img(i[0])
-        image = keras.utils.img_to_array(image, target_size=input_size)
-        prediction = model.predict(image)
-        predictions.append(prediction[0])
-        labels.append(i[0].split("/")[3])
+        image = keras.utils.load_img(os.path.join(i[0], i[1]), target_size=input_size)
+        image = keras.utils.img_to_array(image)
+        image = tf.expand_dims(image, 0)
+        model_predictions = model.predict(image)
+        max_pred_index = np.argmax(model_predictions)
+        predicted_class = class_names[max_pred_index]
+        predictions.append(predicted_class)
+        labels.append(i[0].split("/")[7])
 
     return predictions, labels
