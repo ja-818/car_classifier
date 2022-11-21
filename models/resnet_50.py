@@ -118,6 +118,6 @@ def create_model(
         # Assign it to `model` variable
         # TODO
         model = keras.models.load_model(weights)
-        model.trainable = True
+        # model.trainable = True
 
     return model
