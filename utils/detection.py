@@ -73,7 +73,7 @@ def get_vehicle_coordinates(img):
     # If there's not car or truck detected, return the image height and width
     if len(interest_bboxes) == 0:
         height, width = img.shape[:2]
-        return [0, 0, height, width]
+        return [0, 0, width, height]
 
     
     # Keep largest bbox
