@@ -9,6 +9,11 @@ same directory structure with its subfolders but with new images.
 """
 
 import argparse
+import os
+import cv2
+from utils.utils import walkdir
+from utils.detection import get_vehicle_coordinates
+from tensorflow import keras
 
 
 def parse_args():
@@ -47,18 +52,33 @@ def main(data_folder, output_data_folder):
         Full path to the directory in which we will store the resulting
         cropped images.
     """
+    os.mkdir(output_data_folder)
+    os.mkdir(f"{output_data_folder}/test")
+    os.mkdir(f"{output_data_folder}/train")
     # For this function, you must:
     #   1. Iterate over each image in `data_folder`, you can
     #      use Python `os.walk()` or `utils.waldir()``
+    for i in walkdir(data_folder):
     #   2. Load the image
+        image = cv2.imread(os.path.join(i[0], i[1]))
+        
     #   3. Run the detector and get the vehicle coordinates, use
     #      utils.detection.get_vehicle_coordinates() for this task
+        x0,y0,x1,y1 = get_vehicle_coordinates(image)
+        
     #   4. Extract the car from the image and store it in
     #      `output_data_folder` with the same image name. You may also need
     #      to create additional subfolders following the original
     #      `data_folder` structure.
-    # TODO
-
+        cropped_image = image[y0:y1,x0:x1,:]
+        folder_path = os.path.join(output_data_folder, "/".join(i[0].split("/")[2:]))
+        image_path = os.path.join(folder_path, i[1])        
+        
+        if os.path.exists(folder_path):
+            keras.utils.save_img(image_path, cropped_image)
+        else:
+            os.mkdir(folder_path)
+            keras.utils.save_img(image_path, cropped_image)
 
 if __name__ == "__main__":
     args = parse_args()

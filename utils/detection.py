@@ -1,6 +1,7 @@
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
 from detectron2.engine.defaults import DefaultPredictor
+from tensorflow import keras
 
 # The chosen detector model is "COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"
 # because this particular model has a good balance between accuracy and speed.
@@ -58,7 +59,32 @@ def get_vehicle_coordinates(img):
         List having bounding box coordinates as [left, top, right, bottom].
         Also known as [x1, y1, x2, y2].
     """
-    # TODO
-    box_coordinates = None
+    outputs = DET_MODEL(img)
+    cars_trucks_id = [2,7]
+    classes = outputs["instances"].pred_classes.cpu().numpy()
+    boxes = outputs["instances"].pred_boxes.tensor.cpu().numpy()
+    interest_bboxes = []
+    
+    # Get the bboxes only of cars and trucks
+    for i in range(classes.shape[0]):
+        if classes[i] in cars_trucks_id:
+            interest_bboxes.append(boxes[i,:].astype(int))
 
+    # If there's not car or truck detected, return the image height and width
+    if len(interest_bboxes) == 0:
+        height, width = img.shape[:2]
+        return [0, 0, height, width]
+
+    
+    # Keep largest bbox
+    largest_bbox = None
+    largest_area = 0
+    for bbox in interest_bboxes:
+        _,_,x1,y1 = bbox
+        area = y1*x1
+        if area > largest_area:
+            largest_bbox = bbox
+            largest_area = area
+
+    box_coordinates = largest_bbox
     return box_coordinates
